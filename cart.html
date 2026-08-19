@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Carrito</title>
+</head>
+<body>
+
+  <h2>Tu Carrito</h2>
+  <ul id="cart-list"></ul>
+  <p>Total: $<span id="total">0</span></p>
+
+  <button onclick="checkout()">Terminar Compra</button>
+
+  <br><br>
+  <a href="product.html">Volver a Productos</a>
+
+  <script>
+    function updateCartUI() {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let list = document.getElementById("cart-list");
+      if (!list) return;
+      list.innerHTML = "";
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        list.innerHTML += `<li>${item.name} - $${item.price} <button onclick="removeFromCart(${index})">Quitar</button></li>`;
+        total += item.price;
+      });
+      document.getElementById("total").textContent = total;
+    }
+
+    function removeFromCart(index) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function checkout() {
+      localStorage.removeItem("cart");
+      alert("¡Gracias por tu compra!");
+      updateCartUI();
+    }
+
+    updateCartUI();
+  </script>
+</body>
+</html>

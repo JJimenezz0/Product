@@ -1,19 +1,63 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <title>Products</title>
+  <title>Productos</title>
 </head>
 <body>
-    <h1>===Productos disponibles===</h1>
-    
-    <!-- Lista numerada -->
-    <ol>
-        <li>Celular - $1.200.000 COP</li>
-        <li>Audífonos - $150.000 COP</li>
-    </ol>
 
-    <!-- Casillas de texto -->
-    <p>Nombre: <input type="text"></p>
-    <p>Precio COP: <input type="number"></p>
+  <h1>Productos</h1>
+  
+  <h3>Añadir Producto</h3>
+  <input type="text" id="new-name" placeholder="Nombre">
+  <input type="number" id="new-price" placeholder="Precio">
+  <button onclick="createNewProduct()">Crear</button>
+
+  <ul id="product-list"></ul>
+
+  <br>
+  <a href="cart.html">Ver Carrito</a>
+
+  <script>
+    let products = JSON.parse(localStorage.getItem("products")) || [];
+
+    function addToCart(name, price) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push({ name, price });
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert(name + " agregado al carrito");
+    }
+
+    function createNewProduct() {
+      let nameInput = document.getElementById("new-name");
+      let priceInput = document.getElementById("new-price");
+      let name = nameInput.value;
+      let price = Number(priceInput.value);
+
+      if(name === "" || price <= 0) return;
+
+      products.push({ name, price });
+      localStorage.setItem("products", JSON.stringify(products));
+      
+      nameInput.value = "";
+      priceInput.value = "";
+      showProducts();
+    }
+
+    function showProducts() {
+      let list = document.getElementById("product-list");
+      if (!list) return;
+
+      list.innerHTML = `
+        <li>Manzana - $10 <button onclick="addToCart('Manzana', 10)">Agregar</button></li>
+        <li>Pan - $5 <button onclick="addToCart('Pan', 5)">Agregar</button></li>
+      `;
+
+      products.forEach(prod => {
+        list.innerHTML += `<li>${prod.name} - $${prod.price} <button onclick="addToCart('${prod.name}', ${prod.price})">Agregar</button></li>`;
+      });
+    }
+
+    showProducts();
+  </script>
 </body>
 </html>
